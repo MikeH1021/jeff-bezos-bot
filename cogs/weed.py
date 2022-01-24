@@ -1,5 +1,4 @@
 import os
-from tkinter import image_names
 from vars import *
 from discord.ext import commands, tasks
 from blinkpy.blinkpy import Blink
