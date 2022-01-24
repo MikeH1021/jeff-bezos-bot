@@ -13,9 +13,9 @@ class weed(commands.Cog):
         self.client = client
         self.blink = Blink()
 
-        # self.auth = Auth({"username": BLINK_USERNAME,
-        #                  "password": BLINK_PASSWORD}, no_prompt=True)
-        # self.blink.auth = self.auth
+        self.auth = Auth({"username": BLINK_USERNAME,
+                         "password": BLINK_PASSWORD}, no_prompt=True)
+        self.blink.auth = self.auth
         self.blink.start()
 
     @commands.Cog.listener()
