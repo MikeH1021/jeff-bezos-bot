@@ -1,5 +1,5 @@
 blinkpy
 git+https://github.com/Rapptz/discord.py.git
-git+https://github.com/jasonacox/tinytuya.git
+tinytuya
 
 python-dotenv==0.19.0
