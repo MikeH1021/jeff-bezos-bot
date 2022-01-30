@@ -12,7 +12,6 @@ class weed(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.blink = Blink()
-
         self.auth = Auth({"username": BLINK_USERNAME,
                          "password": BLINK_PASSWORD}, no_prompt=True)
         self.blink.auth = self.auth
@@ -20,6 +19,7 @@ class weed(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        pass
         self.weed_loop.start()
 
     async def weed_helper(self, msg):
@@ -41,15 +41,14 @@ class weed(commands.Cog):
     async def weed_loop(self):
         # await ctx.send("Hourly grow tent updates, sponsored by Kyle Richter")
         msg = "Hourly Grow Tent Update... Sponsored by Daddy Bezos"
-        file,embed,_ = await weed.weed_helper(self, msg)
+        file, embed, _ = await weed.weed_helper(self, msg)
         await self.client.get_channel(LOG_CH_ID).send(file=file, embed=embed)
 
     @commands.command()
     async def weed(self, ctx):
-       # await ctx.message.delete()
         temp = await ctx.send("Please wait..")
         msg = "Here's your pic, you filthy animal."
-        file,embed, image_name = await weed.weed_helper(self, msg)
+        file, embed, image_name = await weed.weed_helper(self, msg)
         await ctx.send(file=file, embed=embed)
         os.remove(f'./img/grow_log/{image_name}.jpg')
         await temp.delete()

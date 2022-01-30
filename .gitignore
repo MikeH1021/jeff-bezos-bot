@@ -9,3 +9,9 @@ img
 
 # Mac Stuff
 .DS_STORE
+
+# Tuya
+devices.json
+snapshot.json
+tinytuya.json
+tuya-raw.json

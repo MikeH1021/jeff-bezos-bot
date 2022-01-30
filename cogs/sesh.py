@@ -3,6 +3,8 @@ from discord import ui, Interaction, ButtonStyle
 import asyncio
 
 # Define a simple View that gives us a confirmation menu
+
+
 class Confirm(ui.View):
     def __init__(self):
         super().__init__()
@@ -23,6 +25,7 @@ class Confirm(ui.View):
         await interaction.response.send_message('No sesh :(', ephemeral=False)
         self.value = False
         self.stop()
+
 
 class Sesh(commands.Cog):
 
@@ -47,8 +50,3 @@ class Sesh(commands.Cog):
 
 def setup(client):
     client.add_cog(Sesh(client))
-
-
-
-
-

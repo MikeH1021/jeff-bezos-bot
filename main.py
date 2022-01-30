@@ -11,7 +11,6 @@ client = commands.Bot(
     case_insensitive=True)
 
 
-
 @client.command()
 async def load(ctx, extension):
     """Load cog"""
