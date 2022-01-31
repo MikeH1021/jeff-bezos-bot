@@ -10,6 +10,9 @@ img
 # Mac Stuff
 .DS_STORE
 
+# Plex Download
+last_search.json
+
 # Tuya
 devices.json
 snapshot.json
