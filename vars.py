@@ -17,3 +17,20 @@ TUYA_DEVICE_ID = os.getenv('TUYA_DEVICE_ID')
 
 GUILD_ID = 933259754174824468
 LOG_CH_ID = 933266727519809568
+MOVIES_CH_ID = 937519245053530194
+
+# Plex Downloader
+#Radarr API Token
+R_TOKEN = os.getenv('R_TOKEN')
+#Radarr Host Url
+R_HOST_URL = os.getenv('R_HOST_URL')
+#Sonarr API Token
+S_TOKEN = None
+#Sonarr Host Url
+S_HOST_URL = None
+#TMDB API Token
+TMDB_TOKEN = os.getenv('TMDB_TOKEN')
+#Set your server name to be referenced in message responses
+SERVER_NAME = 'Lil Nas-X'
+#Set your discord name to be referenced in message responses
+ADMIN_NAME = 'Mikeh1021#4070'
