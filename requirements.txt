@@ -1,5 +1,6 @@
 blinkpy
 git+https://github.com/Rapptz/discord.py.git
+psutil
 pyarr
 tinytuya
 
