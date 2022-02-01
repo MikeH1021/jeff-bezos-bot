@@ -15,13 +15,12 @@ class Ping(commands.Cog):
         """Ping bot"""
         embed = await Ping.create_status_embed(self)
         msg = await ctx.send(embed=embed)
+        start = datetime.now()
         await asyncio.sleep(1)
-        cnt = 265
-        while cnt > 0:
+        while float((datetime.now() - start).total_seconds()) <= 300.0:
             embed = await Ping.create_status_embed(self)
             await msg.edit(embed=embed)
             await asyncio.sleep(1)
-            cnt -= 1
 
     async def create_status_embed(self):
         """Helper function to create bot status embed"""

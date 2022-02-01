@@ -20,7 +20,10 @@ class tuya(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.water_loop.start()
+        if PY_ENV == 'PROD':
+            self.water_loop.start()
+        else:
+            pass
 
     @commands.cooldown(1, 1000, commands.BucketType.user)
     @commands.command()
@@ -41,7 +44,8 @@ class tuya(commands.Cog):
     @water.error
     async def water_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            embed = Embed(title=f"Slow it down bro!", description=f"Try again in {error.retry_after:.2f}s.", color=Color.red())
+            embed = Embed(title=f"Slow it down bro!",
+                          description=f"Try again in {error.retry_after:.2f}s.", color=Color.red())
             await ctx.send(f'<@{ctx.author.id}>', embed=embed)
             print("spamming detected, rate-limiting activated")
 

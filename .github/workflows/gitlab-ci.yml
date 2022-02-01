@@ -19,10 +19,8 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            pkill python
             cd jeff-bezos-bot
             git pull
             pip3 install -r requirements.txt
-            python3 main.py
         timeout-minutes: 2
         continue-on-error: true
