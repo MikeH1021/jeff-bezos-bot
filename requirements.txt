@@ -3,5 +3,4 @@ git+https://github.com/Rapptz/discord.py.git
 psutil
 pyarr
 tinytuya
-
 python-dotenv==0.19.0
