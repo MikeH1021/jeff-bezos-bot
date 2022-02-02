@@ -34,8 +34,8 @@ R_HOST_URL = os.getenv('R_HOST_URL')
 S_TOKEN = None
 # Sonarr Host Url
 S_HOST_URL = None
-# TMDB API Token
-TMDB_TOKEN = os.getenv('TMDB_TOKEN')
+# IMDB API Key
+IMDB_API_KEY = os.getenv('IMDB_API_KEY')
 # Set your server name to be referenced in message responses
 SERVER_NAME = 'Lil Nas-X'
 # Set your discord name to be referenced in message responses
