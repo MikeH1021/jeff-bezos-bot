@@ -100,6 +100,7 @@ class Plex(commands.Cog):
                 selected_movie_id, 1, '/mnt/user/Media/Movies', True, True, False)
             if str(type(add_movie)) == "<class 'list'>":
                 await select_msg.delete()
+                await movie_embed.delete()
                 msg = await ctx.send(f"Looks like this movie is already available on {SERVER_NAME}, if not, please contact {ADMIN_NAME}.")
                 await asyncio.sleep(10)
                 await msg.delete()
