@@ -36,7 +36,6 @@ class Sesh(commands.Cog):
     async def sesh(self, ctx, arg):
         """Invite someone to sesh"""
         view = Confirm()
-        await ctx.defer()
         await ctx.message.delete()
         await ctx.send(f'<@{ctx.author.id}> has invited you to a sesh {arg}', view=view)
         # Wait for the View to stop listening for input...
