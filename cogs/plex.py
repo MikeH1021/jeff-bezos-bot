@@ -1,179 +1,164 @@
-import discord
+from discord import Color, Embed
 from discord.ext import commands
-from urllib.request import Request, urlopen
-from time import sleep
-import json
+import requests
 import os
-import io
+import json
 from pyarr import RadarrAPI
-from datetime import date
-import sys
 import asyncio
 from vars import *
 
-radarr = RadarrAPI(R_HOST_URL, R_TOKEN)
-# Last search json file
-last_search = os.path.join(os.path.dirname(__file__), f'last_search.json')
-# Set your avg download time per movie - in seconds
-avg_time_download = 30
-avg_time_seconds = avg_time_download * 60
+AVG_DOWNLOAD_TIME = 30
+IMDB_BASE_URL = 'https://www.imdb.com/title/'
+IMDB_MOVIE_BASE_URL = f'https://imdb-api.com/en/API/SearchMovie/{IMDB_API_KEY}/'
 
-embed = discord.Embed()
+radarr = RadarrAPI(R_HOST_URL, R_TOKEN)
 
 
 class Plex(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    async def create_movie_embed(self, movie):
+        title = f"{movie['title']} | {movie['description']}"
+        img_url = movie['image']
+        movie_url = f"{IMDB_BASE_URL}{movie['id']}/"
+        embed = Embed(
+            title=title,
+            color=Color.blue(),
+            url=movie_url
+        )
+        embed.set_image(url=img_url)
+        return embed
+
     @commands.command()
     async def movie(self, ctx, *args):
         if ctx.channel.id == MOVIES_CH_ID:
-            current_requester = ctx.author
-            current_channel = ctx.channel.id
-            player_choice = None
-            req_movie = " ".join(args[:])
-            str_req_movie = req_movie.title()
-            await ctx.send(f"Searching for {req_movie.title()}")
-            await asyncio.sleep(1)
-            await ctx.send(f"One moment...")
-            await asyncio.sleep(1)
-            req_movie_rep = ""
-            for x in req_movie:
-                if x == " ":
-                    req_movie_rep += "%"
-                elif x.isalpha() == False and x.isdigit() == False:
-                    pass
-                else:
-                    req_movie_rep += x
-            google_search_req = ""
-            for x in req_movie_rep:
-                if x == "%":
-                    google_search_req += "+"
-                else:
-                    google_search_req += x
-            req_movie = req_movie_rep
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3"}
-            req = Request(
-                url=f"https://api.themoviedb.org/3/search/movie?api_key={TMDB_TOKEN}&query={req_movie}", headers=headers)
-            html = urlopen(req)
-            html = json.load(html)
-            if html == {"page": 1, "results": [], "total_pages": 0, "total_results": 0}:
-                if "%" in req_movie:
-                    req_movie_rep = ""
-                    for x in req_movie:
-                        if x == "%":
-                            req_movie_rep += "-"
-                        else:
-                            req_movie_rep += x
-                    req_movie = req_movie_rep
-                    headers = {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3"}
-                    req = Request(
-                        url=f"https://api.themoviedb.org/3/search/movie?api_key={TMDB_TOKEN}&query={req_movie}", headers=headers)
-                    html = urlopen(req)
-                    html = json.load(html)
-                    if html == {"page": 1, "results": [], "total_pages": 0, "total_results": 0}:
-                        await ctx.send(f"No results found for '{str_req_movie}'")
-                        await asyncio.sleep(1)
-                        await ctx.send(f"Let's try searching the internet for it...")
-                        await asyncio.sleep(1)
-                        await ctx.send(f"https://letmegooglethat.com/?q={google_search_req}%3F")
-                        return
-                else:
-                    await ctx.send(f"No results found for '{str_req_movie}'")
-                    await asyncio.sleep(1)
-                    await ctx.send(f"Let's try searching the internet for it...")
-                    await asyncio.sleep(1)
-                    await ctx.send(f"https://letmegooglethat.com/?q={google_search_req}%3F")
-                    return
-            print_list = {}
-            for x in html["results"]:
-                x["release_date"] = x.get(
-                    "release_date", "Release date unavailable")
-                x["title"] = x.get("title", "Title unavailable")
-                poster_suffix = x.get(
-                    "poster_path", "/dykOcAqI01Fci5cKQW3bEUrPWwU.jpg")
-                x["poster_path"] = (
-                    f"https://image.tmdb.org/t/p/original{poster_suffix}")
-                x["overview"] = x.get("overview", "Description unavailable.")
-                # x["id"] = x.get("id", )
-                if x["overview"] == "":
-                    x["overview"] = "Description unavailable."
-                if "jpg" not in x["poster_path"]:
-                    x["poster_path"] = "https://i.imgur.com/1glpRCZ.png?1"
-                print_list[x["original_title"]] = [
-                    x["id"], x["poster_path"], x["title"], x["release_date"], x["overview"]]
-            with io.open(last_search, "w", encoding="UTF-8") as last_search_w:
-                json.dump(print_list, last_search_w)
-            with io.open(last_search, "r", encoding="UTF-8") as last_search_r:
-                list_of_movies = json.load(last_search_r)
-            selected_movie_id = ""
-            selected_movie = ""
-            number_of_results = len(list_of_movies.keys())
-            count_1 = 0
-            await ctx.send(f"Displaying results... \nType 'stop' to cancel search, or 'startover' to restart your search.")
-            await asyncio.sleep(1)
+            await ctx.message.delete()
+            req_movie = ' '.join(args)
+            tmp = await ctx.send(f'Searching for {req_movie.title()}. One moment...')
+            url = f'{IMDB_MOVIE_BASE_URL}{req_movie}'
+            response = requests.get(url).json()
+            result_cnt = 0
+            for movie in response['results']:
+                result_cnt += 1
+
+            embed_flag = False
+            movie_embed = None
             while True:
-                for x, y in list_of_movies.items():
-                    await ctx.send("Is this the correct movie? ('yes' or 'no')")
-                    await asyncio.sleep(1)
-                    embed.set_image(url=y[1])
-                    await ctx.send(embed=embed)
-                    await ctx.send(f"`{y[2]} ({y[3]})`\n```{y[4]}```")
-                    
-                    player_choice = await self.client.wait_for('message', check=lambda message: message.author == current_requester and message.channel.id == current_channel and message.content.lower().strip() in ["yes", "y", "startover", "stop", "no", "n", ])
-                    if player_choice.content.lower().strip() == "yes" or player_choice.content.lower().strip() == "y":
-                        selected_movie = (f"{y[2]} ({y[3]})")
-                        await ctx.send(f"Selected: `{selected_movie}`")
-                        await asyncio.sleep(2)
-                        selected_movie_id = y[0]
+                tmp2 = await ctx.send(f'Displaying results. Type `cancel` to stop search')
+                await asyncio.sleep(1)
+                tmp3 = await ctx.send('Is this the correct movie? (`yes` or `no`)')
+                for movie in response['results']:
+                    embed = await Plex.create_movie_embed(self, movie)
+                    if embed_flag:
+                        movie_embed = await movie_embed.edit(embed=embed)
+                    else:
+                        movie_embed = await ctx.send(embed=embed)
+                        embed_flag = True
+
+                    def check(message):
+                        return message.author == ctx.author and message.channel.id == ctx.channel.id and message.content.lower().strip() in ['yes', 'y', 'no', 'n', 'cancel']
+
+                    message = await self.client.wait_for('message', timeout=300, check=check)
+                    movie_choice = message.content.lower().strip()
+                    if movie_choice == 'yes' or movie_choice == 'y':
+                        await message.delete()
+                        selected_movie = movie['title']
+                        select_msg = await ctx.send(f'Selected: {selected_movie}')
+                        selected_movie_id = movie['id']
                         break
-                    elif player_choice.content.lower().strip() == "startover":
-                        await ctx.send(f"Starting search over...")
-                        await asyncio.sleep(1)
-                        break
-                    elif player_choice.content.lower().strip() == "stop":
-                        await ctx.send(f"Cancelling search... Have a good day!")
-                        await asyncio.sleep(1)
-                        return
-                    elif player_choice.content.lower().strip() == "no" or player_choice.content.lower().strip() == "n":
-                        count_1 += 1
-                        if count_1 == number_of_results:
-                            await ctx.send(f"Unfortunately, we have run out of results.")
-                            await asyncio.sleep(1)
-                            await ctx.send(f"It's possible that this movie does not exist, let's check if it does and try again...")
-                            await asyncio.sleep(1)
-                            await ctx.send(f"https://letmegooglethat.com/?q={google_search_req}%3F")
+                    elif movie_choice == 'no' or movie_choice == 'n':
+                        await message.delete()
+                        result_cnt -= 1
+                        if result_cnt == 0:
+                            await tmp.delete()
+                            await tmp2.delete()
+                            await tmp3.delete()
+                            await movie_embed.delete()
+                            msg = await ctx.send(f'We have run out of results searching for {req_movie.title()}.')
+                            await asyncio.sleep(10)
+                            await msg.delete()
                             return
                         else:
                             pass
-                if player_choice.content.lower().strip() == "yes" or player_choice.content.lower().strip() == "y":
+                    elif movie_choice == 'cancel':
+                        await message.delete()
+                        await tmp.delete()
+                        await tmp2.delete()
+                        await tmp3.delete()
+                        await movie_embed.delete()
+                        msg = await ctx.send('Search cancelled!')
+                        await asyncio.sleep(10)
+                        await msg.delete()
+                        return
+                if movie_choice == 'yes' or movie_choice == 'y':
+                    await tmp.delete()
+                    await tmp2.delete()
+                    await tmp3.delete()
                     break
-                elif player_choice.content.lower().strip() == "startover":
-                    pass
-            add_movie = radarr.add_movie(selected_movie_id, 1, '/mnt/user/Media/Movies')
+            add_movie = radarr.add_movie(
+                selected_movie_id, 1, '/mnt/user/Media/Movies', True, True, False)
             if str(type(add_movie)) == "<class 'list'>":
-                await ctx.send(f"Looks like this movie is already available on {SERVER_NAME}, if not, please contact {ADMIN_NAME}.")
+                await select_msg.delete()
+                msg = await ctx.send(f"Looks like this movie is already available on {SERVER_NAME}, if not, please contact {ADMIN_NAME}.")
+                await asyncio.sleep(10)
+                await msg.delete()
                 return
             else:
-                await ctx.send(f"Movie is being downloaded to {SERVER_NAME}.")
+                await select_msg.delete()
+                tmp = await ctx.send(f"Movie is being downloaded to {SERVER_NAME}.")
                 await asyncio.sleep(1)
-                await ctx.send(f"Please wait: {avg_time_download} minute(s)...")
+                tmp2 = await ctx.send(f"Please wait: {AVG_DOWNLOAD_TIME} minute(s)...")
+                avg_time_seconds = AVG_DOWNLOAD_TIME * 60
+                await asyncio.sleep(10)
+                await tmp.delete()
+                await tmp2.delete()
                 await asyncio.sleep(avg_time_seconds)
                 movie_check = radarr.get_movie(selected_movie_id)
                 try:
                     radarr_id = movie_check[0]["movieFile"]['id']
                     if radarr.get_movie_file(radarr_id) == {'message': 'NotFound'}:
-                        await ctx.send(f"{SERVER_NAME} is having trouble finding `{selected_movie}`, please check server frequently for updates as this may be added at a later time.")
+                        msg = await ctx.send(f"{SERVER_NAME} is having trouble finding `{selected_movie}`, please check server frequently for updates as this may be added at a later time.")
+                        await asyncio.sleep(10)
+                        await msg.delete()
                     else:
-                        await ctx.send(f"`{selected_movie}` is now available on {SERVER_NAME}. Enjoy!")
+                        msg = await ctx.send(f"`{selected_movie}` is now available on {SERVER_NAME}. Enjoy!")
+                        await asyncio.sleep(10)
+                        await msg.delete()
                 except:
-                    await ctx.send(f"{SERVER_NAME} is having trouble finding `{selected_movie}`, please check server frequently for updates as this may be added at a later time.")
+                    msg = await ctx.send(f"{SERVER_NAME} is having trouble finding `{selected_movie}`, please check server frequently for updates as this may be added at a later time.")
+                    await asyncio.sleep(10)
+                    await msg.delete()
         else:
             msg = await ctx.send(f'<@{ctx.author.id}> Please use <#{MOVIES_CH_ID}> for that!')
             await asyncio.sleep(10)
             await msg.delete()
+
+    @commands.command()
+    async def plextime(self, ctx, arg):
+        global AVG_DOWNLOAD_TIME
+        AVG_DOWNLOAD_TIME = int(arg)
+        msg = await ctx.send(f'Plex average download time updated to {arg} minutes')
+        await asyncio.sleep(10)
+        await msg.delete()
+
+    @commands.command()
+    async def radarrqueue(self, ctx):
+        queue = radarr.get_queue(1, 100, 'ascending', 'timeLeft', True)
+        queue = json.dumps(queue, indent=4)
+        queue = json.loads(queue)
+        print(type(queue))
+        for x in queue['records']:
+            try:
+                await ctx.send(x['id'])
+            except:
+                pass
+# queued
+# downloading
+# warning - stalling no seeders
+# completed
+# 823461
+
 
 def setup(client):
     client.add_cog(Plex(client))
