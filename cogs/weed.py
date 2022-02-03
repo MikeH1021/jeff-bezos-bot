@@ -17,36 +17,48 @@ class weed(commands.Cog):
                             "password": BLINK_PASSWORD}, no_prompt=True)
             self.blink.auth = self.auth
             self.blink.start()
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        if PY_ENV == 'PROD':
             self.weed_loop.start()
-        else:
-            pass
+            self.pepper_loop.start()
+            self.mushroom_loop.start()
 
-    async def weed_helper(self, msg):
-        camera = self.blink.cameras['Wiz']
+
+    async def image_helper(self, msg, camera, grow):
+        camera = self.blink.cameras[f'{camera}']
         camera.snap_picture()
         await asyncio.sleep(10)
         self.blink.refresh()
         current_time = datetime.now().timestamp()
-        image_name = f'grow-log-{current_time}'
+        if grow == 'grow_log':
+            image_name = f'grow-log-{current_time}'
+        else:
+            image_name = f'{grow}-{current_time}'
         camera.image_to_file(
-            f'{os.getcwd()}/jeff-bezos-bot/img/grow_log/{image_name}.jpg')
+            f'{os.getcwd()}/jeff-bezos-bot/img/{grow}/{image_name}.jpg')
         embed = Embed(
             title=msg,
             color=Color.green())
         file = File(
-            f'{os.getcwd()}/jeff-bezos-bot/img/grow_log/{image_name}.jpg', filename='image.jpg')
+            f'{os.getcwd()}/jeff-bezos-bot/img/{grow}/{image_name}.jpg', filename='image.jpg')
         embed.set_image(url='attachment://image.jpg')
         return file, embed, image_name
 
     @tasks.loop(minutes=60)
     async def weed_loop(self):
         msg = "Hourly Grow Tent Update... Sponsored by Daddy Bezos"
-        file, embed, _ = await weed.weed_helper(self, msg)
-        await self.client.get_channel(LOG_CH_ID).send(file=file, embed=embed)
+        file, embed, _ = await weed.image_helper(self, msg, 'Wiz', 'grow_log')
+        await self.client.get_channel(GROW_LOG_CH_ID).send(file=file, embed=embed)
+
+    @tasks.loop(minutes=60)
+    async def pepper_loop(self):
+        msg = "Hourly Pepper Update... Sponsored by Daddy Bezos"
+        file, embed, _ = await weed.image_helper(self, msg, 'balcony', 'pepper_log')
+        await self.client.get_channel(PEPPER_LOG_CH_ID).send(file=file, embed=embed)
+
+    @tasks.loop(minutes=60)
+    async def mushroom_loop(self):
+        msg = "Hourly Shroom Update... Sponsored by Daddy Bezos"
+        file, embed, _ = await weed.image_helper(self, msg, 'myco', 'mushroom_log')
+        await self.client.get_channel(MUSHROOM_LOG_CH_ID).send(file=file, embed=embed)
 
     @commands.command()
     async def weed(self, ctx):
@@ -54,9 +66,33 @@ class weed(commands.Cog):
             return
         temp = await ctx.send("Please wait..")
         msg = "Here's your pic, you filthy animal."
-        file, embed, image_name = await weed.weed_helper(self, msg)
+        file, embed, image_name = await weed.image_helper(self, msg, 'Wiz', 'grow_log')
         await ctx.send(file=file, embed=embed)
         os.remove(f'{os.getcwd()}/jeff-bezos-bot/img/grow_log/{image_name}.jpg')
+        await temp.delete()
+
+    @commands.command()
+    async def pepper(self, ctx):
+        await ctx.message.delete()
+        if ctx.channel.id == KYLE_LOG_CH_ID:
+            return
+        temp = await ctx.send("Please wait..")
+        msg = "Here's your pic, you filthy animal."
+        file, embed, image_name = await weed.image_helper(self, msg, 'balcony', 'pepper_log')
+        await ctx.send(file=file, embed=embed)
+        os.remove(f'{os.getcwd()}/jeff-bezos-bot/img/pepper_log/{image_name}.jpg')
+        await temp.delete()
+
+    @commands.command()
+    async def shroom(self, ctx):
+        await ctx.message.delete()
+        if ctx.channel.id == KYLE_LOG_CH_ID:
+            return
+        temp = await ctx.send("Please wait..")
+        msg = "Here's your pic, you filthy animal."
+        file, embed, image_name = await weed.image_helper(self, msg, 'myco', 'mushroom_log')
+        await ctx.send(file=file, embed=embed)
+        os.remove(f'{os.getcwd()}/jeff-bezos-bot/img/mushroom_log/{image_name}.jpg')
         await temp.delete()
 
 

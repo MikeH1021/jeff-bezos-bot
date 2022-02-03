@@ -17,13 +17,8 @@ c = tinytuya.Cloud(
 class tuya(commands.Cog):
     def __init__(self, client):
         self.client = client
-
-    @commands.Cog.listener()
-    async def on_ready(self):
         if PY_ENV == 'PROD':
             self.water_loop.start()
-        else:
-            pass
 
     @commands.cooldown(1, 1000, commands.BucketType.user)
     @commands.command()
@@ -82,7 +77,7 @@ class tuya(commands.Cog):
         d.turn_on()
         await asyncio.sleep(WATER_TIME)
         d.turn_off()
-        await self.client.get_channel(LOG_CH_ID).send(f"Scheduled watering executed for {WATER_TIME} seconds.")
+        await self.client.get_channel(PEPPER_LOG_CH_ID).send(f"Scheduled watering executed for {WATER_TIME} seconds.")
 
     # async def water_level(self, d):
     #     pass
