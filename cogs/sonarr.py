@@ -3,16 +3,16 @@ from discord.ext import commands
 import requests
 import os
 import json
-# from pyarr import SonarrAPI
+from pyarr import SonarrAPI
 import tvdb_v4_official
 import asyncio
 from vars import *
 
 AVG_DOWNLOAD_TIME = 60
 
-# sonarr = SonarrAPI(S_HOST_URL, S_TOKEN)
+sonarr = SonarrAPI(S_HOST_URL, S_TOKEN)
 tvdb = tvdb_v4_official.TVDB(TVDB_API_KEY, pin=TVDB_PIN)
-
+TVDB_BASE_URL = 'https://thetvdb.com/search?query='
 
 class PlexSonarr(commands.Cog):
     def __init__(self, client):
@@ -20,11 +20,18 @@ class PlexSonarr(commands.Cog):
 
     @commands.command()
     async def test(self, ctx, *args):
-        req_movie = ' '.join(args)
-        shows = tvdb.get_all_series(1, req_movie)
+        req_show = ' '.join(args)
+        # shows = tvdb.get_all_series(req_show)
         # shows2 = tvdb.get_series()
         # shows3 = tvdb.get_series_extended()
-        print(shows)
+        # for show in shows:
+        #     await ctx.send(show)
+        req_show = req_show.replace(':', '')
+        req_show = req_show.replace(' ', '%')
+        url = f'{TVDB_BASE_URL}{req_show}'
+        response = requests.get(url)
+        await ctx.send(type(response))
+        print(response)
 
     # async def create_movie_embed(self, movie):
     #     title = f"{movie['title']} | {movie['description']}"
