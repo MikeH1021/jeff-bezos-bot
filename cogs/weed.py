@@ -17,13 +17,7 @@ class weed(commands.Cog):
                             "password": BLINK_PASSWORD}, no_prompt=True)
             self.blink.auth = self.auth
             self.blink.start()
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        if PY_ENV == 'PROD':
             self.weed_loop.start()
-        else:
-            pass
 
     async def weed_helper(self, msg):
         camera = self.blink.cameras['Wiz']

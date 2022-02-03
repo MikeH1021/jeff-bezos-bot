@@ -17,13 +17,8 @@ c = tinytuya.Cloud(
 class tuya(commands.Cog):
     def __init__(self, client):
         self.client = client
-
-    @commands.Cog.listener()
-    async def on_ready(self):
         if PY_ENV == 'PROD':
             self.water_loop.start()
-        else:
-            pass
 
     @commands.cooldown(1, 1000, commands.BucketType.user)
     @commands.command()
