@@ -14,7 +14,7 @@ IMDB_MOVIE_BASE_URL = f'https://imdb-api.com/en/API/SearchMovie/{IMDB_API_KEY}/'
 radarr = RadarrAPI(R_HOST_URL, R_TOKEN)
 
 
-class Plex(commands.Cog):
+class PlexRadarr(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -49,7 +49,7 @@ class Plex(commands.Cog):
                 await asyncio.sleep(1)
                 tmp3 = await ctx.send('Is this the correct movie? (`yes` or `no`)')
                 for movie in response['results']:
-                    embed = await Plex.create_movie_embed(self, movie)
+                    embed = await PlexRadarr.create_movie_embed(self, movie)
                     if embed_flag:
                         movie_embed = await movie_embed.edit(embed=embed)
                     else:
@@ -136,10 +136,10 @@ class Plex(commands.Cog):
             await msg.delete()
 
     @commands.command()
-    async def plextime(self, ctx, arg):
+    async def radarrtime(self, ctx, arg):
         global AVG_DOWNLOAD_TIME
         AVG_DOWNLOAD_TIME = int(arg)
-        msg = await ctx.send(f'Plex average download time updated to {arg} minutes')
+        msg = await ctx.send(f'Plex movie average download time updated to {arg} minutes')
         await asyncio.sleep(10)
         await msg.delete()
 
@@ -162,4 +162,4 @@ class Plex(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(Plex(client))
+    client.add_cog(PlexRadarr(client))
