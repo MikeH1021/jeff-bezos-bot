@@ -4,3 +4,4 @@ psutil
 pyarr
 tinytuya
 python-dotenv==0.19.0
+tvdb_v4_official

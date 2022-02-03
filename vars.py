@@ -11,7 +11,8 @@ BLINK_USERNAME = os.getenv('BLINK_USERNAME')
 BLINK_PASSWORD = os.getenv('BLINK_PASSWORD')
 
 # Environment
-PY_ENV = os.getenv('PY_ENV')
+# PY_ENV = os.getenv('PY_ENV')
+PY_ENV = 'DEV'
 
 # Tuya Authentication
 TUYA_API_KEY = os.getenv('TUYA_API_KEY')
@@ -36,6 +37,9 @@ S_TOKEN = None
 S_HOST_URL = None
 # IMDB API Key
 IMDB_API_KEY = os.getenv('IMDB_API_KEY')
+# TVDB API Key
+TVDB_API_KEY = os.getenv('TVDB_API_KEY')
+TVDB_PIN = os.getenv('TVDB_PIN')
 # Set your server name to be referenced in message responses
 SERVER_NAME = 'Lil Nas-X'
 # Set your discord name to be referenced in message responses
