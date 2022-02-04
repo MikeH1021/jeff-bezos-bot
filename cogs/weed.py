@@ -26,7 +26,7 @@ class weed(commands.Cog):
         camera = self.blink.cameras[f'{camera}']
         camera.snap_picture()
         await asyncio.sleep(10)
-        self.blink.refresh()
+        # self.blink.refresh()
         current_time = datetime.now().timestamp()
         if grow == 'grow_log':
             image_name = f'grow-log-{current_time}'
