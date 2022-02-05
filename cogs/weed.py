@@ -74,6 +74,7 @@ class weed(commands.Cog):
         await ctx.send(file=file, embed=embed)
         os.remove(f'{os.getcwd()}/jeff-bezos-bot/img/grow_log/{image_name}.jpg')
         await temp.delete()
+        self.blink.refresh()
 
     @commands.command()
     async def pepper(self, ctx):
@@ -86,6 +87,7 @@ class weed(commands.Cog):
         await ctx.send(file=file, embed=embed)
         os.remove(f'{os.getcwd()}/jeff-bezos-bot/img/pepper_log/{image_name}.jpg')
         await temp.delete()
+        self.blink.refresh()
 
     @commands.command()
     async def shroom(self, ctx):
@@ -98,6 +100,7 @@ class weed(commands.Cog):
         await ctx.send(file=file, embed=embed)
         os.remove(f'{os.getcwd()}/jeff-bezos-bot/img/mushroom_log/{image_name}.jpg')
         await temp.delete()
+        self.blink.refresh()
 
 
 def setup(client):
