@@ -26,7 +26,6 @@ class weed(commands.Cog):
         camera = self.blink.cameras[f'{camera}']
         camera.snap_picture()
         await asyncio.sleep(10)
-        # self.blink.refresh()
         current_time = datetime.now().timestamp()
         if grow == 'grow_log':
             image_name = f'grow-log-{current_time}'
@@ -59,6 +58,11 @@ class weed(commands.Cog):
         msg = "Hourly Shroom Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'myco', 'mushroom_log')
         await self.client.get_channel(MUSHROOM_LOG_CH_ID).send(file=file, embed=embed)
+        
+    @mushroom_loop.after_loop
+    async def after_mushroom(self):
+        await asyncio.sleep(5)
+        self.blink.refresh()
 
     @commands.command()
     async def weed(self, ctx):
