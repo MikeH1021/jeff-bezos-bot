@@ -34,7 +34,6 @@ class weed(commands.Cog):
         camera = self.blink.cameras[f'{camera}']
         camera.snap_picture()
         self.blink.refresh()
-        await asyncio.sleep(10)
         current_time = datetime.now().timestamp()
         if grow == 'grow_log':
             image_name = f'grow-log-{current_time}'
@@ -52,7 +51,6 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def weed_loop(self):
-        await asyncio.sleep(1)
         msg = "Hourly Grow Tent Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'Wiz', 'grow_log')
         await self.client.get_channel(GROW_LOG_CH_ID).send(file=file, embed=embed)
