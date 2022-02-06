@@ -18,8 +18,10 @@ async def load(ctx, extension):
     """Load cog"""
     if ctx.author.id == MY_ID:
         client.load_extension(f'cogs.{extension}')
+        await ctx.send(f'Loaded: {extension}')
     elif ctx.channel.id == GROW_LOG_CH_ID and ctx.author.id == KYLE_ID:
         client.load_extension(f'cogs.{extension}')
+        await ctx.send(f'Loaded: {extension}')
     else:
         await ctx.send('You don\'t have permission to do that!')
 
@@ -28,9 +30,13 @@ async def load(ctx, extension):
 async def reload(ctx, extension):
     """Reload cog"""
     if ctx.author.id == MY_ID:
-        client.reload_extension(f'cogs.{extension}')
-    elif ctx.channel.id == GROW_LOG_CH_ID and ctx.author.id == KYLE_ID:
+        client.unload_extension(f'cogs.{extension}')
         client.load_extension(f'cogs.{extension}')
+        await ctx.send(f'Reloaded: {extension}')
+    elif ctx.channel.id == GROW_LOG_CH_ID and ctx.author.id == KYLE_ID:
+        client.unload_extension(f'cogs.{extension}')
+        client.load_extension(f'cogs.{extension}')
+        await ctx.send(f'Reloaded: {extension}')
     else:
         await ctx.send('You don\'t have permission to do that!')
 
@@ -40,8 +46,10 @@ async def unload(ctx, extension):
     """Unload cog"""
     if ctx.author.id == MY_ID:
         client.unload_extension(f'cogs.{extension}')
+        await ctx.send(f'Unloaded: {extension}')
     elif ctx.channel.id == GROW_LOG_CH_ID and ctx.author.id == KYLE_ID:
-        client.load_extension(f'cogs.{extension}')
+        client.unload_extension(f'cogs.{extension}')
+        await ctx.send(f'Unloaded: {extension}')
     else:
         await ctx.send('You don\'t have permission to do that!')
 
