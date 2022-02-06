@@ -51,6 +51,7 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def weed_loop(self):
+        await asyncio.sleep(1)
         msg = "Hourly Grow Tent Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'Wiz', 'grow_log')
         await self.client.get_channel(GROW_LOG_CH_ID).send(file=file, embed=embed)
