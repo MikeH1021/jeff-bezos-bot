@@ -77,7 +77,7 @@ class tuya(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def water_loop(self):
-        await asyncio.sleep(7)
+        await asyncio.sleep(2)
         d = tinytuya.OutletDevice(
             '80527250a4e57c11e7b9', '192.168.0.102', '09c7bef14266a54d')
         d.set_version(3.3)

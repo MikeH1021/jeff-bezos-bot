@@ -34,6 +34,7 @@ class weed(commands.Cog):
         camera = self.blink.cameras[f'{camera}']
         camera.snap_picture()
         self.blink.refresh()
+        await asyncio.sleep(10)
         current_time = datetime.now().timestamp()
         if grow == 'grow_log':
             image_name = f'grow-log-{current_time}'
@@ -101,7 +102,6 @@ class weed(commands.Cog):
                    description='Get live pic of peppers',
                    guild_ids=[GUILD_ID])
     async def pepper(self, ctx):
-        await ctx.message.delete()
         if ctx.channel.id == KYLE_LOG_CH_ID:
             return
         embed = Embed(title='Please wait...',
@@ -118,7 +118,6 @@ class weed(commands.Cog):
                    description='Get live pic of shrooms',
                    guild_ids=[GUILD_ID])
     async def shroom(self, ctx):
-        await ctx.message.delete()
         if ctx.channel.id == KYLE_LOG_CH_ID:
             return
         embed = Embed(title='Please wait...',
