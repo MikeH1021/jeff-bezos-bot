@@ -26,12 +26,11 @@ class tuya(commands.Cog):
         else:
             pass
 
-    @slash_command(name='purge',
-                   description='Purge messages',
+    @slash_command(name='water',
+                   description='Water plants',
                    guild_ids=[GUILD_ID])
-    async def water(self, ctx, arg=1.0):
-        print(arg)
-        if float(arg) >= 20.0:
+    async def water(self, ctx, arg: Option(float, 'The number of seconds to water', required=True)):
+        if arg >= 20.0:
             arg = 1.0
         msg = await ctx.respond(f"Watering for {arg} seconds.. Please wait.")
         d = tinytuya.OutletDevice(
@@ -39,7 +38,7 @@ class tuya(commands.Cog):
         d.set_version(3.3)
         data = d.status()
         d.turn_on()
-        await asyncio.sleep(float(arg))
+        await asyncio.sleep(arg)
         d.turn_off()
         await msg.edit_original_message("Watering complete - maximum moisture acheived. ;)")
 
