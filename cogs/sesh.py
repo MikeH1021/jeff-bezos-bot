@@ -1,6 +1,8 @@
+from discord import User
+from discord.commands import Option, slash_command
 from discord.ext import commands
 from discord import ui, Interaction, ButtonStyle
-import asyncio
+from vars import GUILD_ID
 
 # Define a simple View that gives us a confirmation menu
 
@@ -32,20 +34,14 @@ class Sesh(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
-    async def sesh(self, ctx, arg):
-        """Invite someone to sesh"""
+    @slash_command(name='sesh',
+                   description='Invite someone to sesh',
+                   guild_ids=[GUILD_ID])
+    async def sesh(self, ctx, arg: Option(User, 'The person to invite', required=True)):
         view = Confirm()
-        await ctx.message.delete()
-        await ctx.send(f'<@{ctx.author.id}> has invited you to a sesh {arg}', view=view)
+        await ctx.respond(f'<@{ctx.author.id}> has invited you to a sesh <@{arg.id}>', view=view)
         # Wait for the View to stop listening for input...
         await view.wait()
-        if view.value is None:
-            print('Timed out...')
-        elif view.value:
-            print('Sesh confirmed! (^_^)')
-        else:
-            print('Cancelled...')
 
 
 def setup(client):
