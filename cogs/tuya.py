@@ -33,7 +33,7 @@ class tuya(commands.Cog):
         print(arg)
         if float(arg) >= 20.0:
             arg = 1.0
-        await ctx.send(f"Watering for {arg} seconds.. Please wait.")
+        msg = await ctx.respond(f"Watering for {arg} seconds.. Please wait.")
         d = tinytuya.OutletDevice(
             '80527250a4e57c11e7b9', '192.168.0.102', '09c7bef14266a54d')
         d.set_version(3.3)
@@ -41,7 +41,7 @@ class tuya(commands.Cog):
         d.turn_on()
         await asyncio.sleep(float(arg))
         d.turn_off()
-        await ctx.send("Watering complete - maximum moisture acheived. ;)")
+        await msg.edit_original_message("Watering complete - maximum moisture acheived. ;)")
 
     async def get_lights(self, ctx: AutocompleteContext):
         """Return available options for light command"""
@@ -61,9 +61,9 @@ class tuya(commands.Cog):
         elif arg == 'off':
             d.turn_off()
         else:
-            await ctx.send("stop being a fucking idiot and put in a real arg")
+            await ctx.respond("something went wrong")
         if arg is not None:
-            await ctx.send(f"light set to {arg}")
+            await ctx.respond(f"light set to {arg}")
 
     @slash_command(name='watertime',
                    description='Change Tuya hourly watering duration',
@@ -77,6 +77,7 @@ class tuya(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def water_loop(self):
+        await asyncio.sleep(7)
         d = tinytuya.OutletDevice(
             '80527250a4e57c11e7b9', '192.168.0.102', '09c7bef14266a54d')
         d.set_version(3.3)

@@ -12,7 +12,7 @@ class asshole(commands.Cog):
                    description='I like to eat ass',
                    guild_ids=[GUILD_ID])
     async def ass(self, ctx):
-        await ctx.send(f"MY ASSHOLE HURTS {random.randint(1,10)}/10")
+        await ctx.respond(f"MY ASSHOLE HURTS {random.randint(1,10)}/10")
 
 
 def setup(client):
