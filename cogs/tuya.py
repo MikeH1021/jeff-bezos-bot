@@ -1,9 +1,9 @@
-from discord import Color, Embed
+from discord import AutocompleteContext, Color, Embed
+from discord.commands import Option, slash_command
 from discord.ext import commands, tasks
 from vars import *
 import tinytuya
 import asyncio
-import random
 
 WATER_TIME = 5.0
 
@@ -20,8 +20,15 @@ class tuya(commands.Cog):
         if PY_ENV == 'PROD':
             self.water_loop.start()
 
-    @commands.cooldown(1, 1000, commands.BucketType.user)
-    @commands.command()
+    def cog_unload(self):
+        if PY_ENV == 'PROD':
+            self.water_loop.cancel()
+        else:
+            pass
+
+    @slash_command(name='purge',
+                   description='Purge messages',
+                   guild_ids=[GUILD_ID])
     async def water(self, ctx, arg=1.0):
         print(arg)
         if float(arg) >= 20.0:
@@ -36,16 +43,14 @@ class tuya(commands.Cog):
         d.turn_off()
         await ctx.send("Watering complete - maximum moisture acheived. ;)")
 
-    @water.error
-    async def water_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            embed = Embed(title=f"Slow it down bro!",
-                          description=f"Try again in {error.retry_after:.2f}s.", color=Color.red())
-            await ctx.send(f'<@{ctx.author.id}>', embed=embed)
-            print("spamming detected, rate-limiting activated")
+    async def get_lights(self, ctx: AutocompleteContext):
+        """Return available options for light command"""
+        return ['on', 'off']
 
-    @commands.command()
-    async def light(self, ctx, arg=None):
+    @slash_command(name='light',
+                   description='Control grow tent lights',
+                   guild_ids=[GUILD_ID])
+    async def light(self, ctx, arg: Option(str, 'on or off', autocomplete=get_lights)):
         print(arg)
         d = tinytuya.OutletDevice(
             '30103770f4cfa2194159', '192.168.0.220', '69756f2b239d20db')
@@ -60,13 +65,15 @@ class tuya(commands.Cog):
         if arg is not None:
             await ctx.send(f"light set to {arg}")
 
-    @commands.command()
-    async def watertime(self, ctx, arg=None):
+    @slash_command(name='watertime',
+                   description='Change Tuya hourly watering duration',
+                   guild_ids=[GUILD_ID])
+    async def watertime(self, ctx, arg: Option(float, 'The number of seconds to water for', required=True, defualt=5.0)):
         global WATER_TIME
-        if float(arg) >= 35.0:
+        if arg >= 35.0:
             arg = 20.0
-        WATER_TIME = float(arg)
-        await ctx.send(f"Watering duration changed to {WATER_TIME}!!")
+        WATER_TIME = arg
+        await ctx.respond(f"Watering duration changed to {WATER_TIME}!!")
 
     @tasks.loop(minutes=60)
     async def water_loop(self):
@@ -79,8 +86,9 @@ class tuya(commands.Cog):
         d.turn_off()
         await self.client.get_channel(PEPPER_LOG_CH_ID).send(f"Scheduled watering executed for {WATER_TIME} seconds.")
 
-    # async def water_level(self, d):
-    #     pass
+    @water_loop.before_loop
+    async def before_water_loop(self):
+        await self.client.wait_until_ready()
 
 
 def setup(client):
