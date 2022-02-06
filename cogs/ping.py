@@ -2,7 +2,9 @@ from datetime import datetime
 import psutil
 import asyncio
 from discord import Color, Embed
+from discord.commands import slash_command
 from discord.ext import commands
+from vars import GUILD_ID
 
 
 class Ping(commands.Cog):
@@ -10,16 +12,17 @@ class Ping(commands.Cog):
         self.client = client
         self.start_time = datetime.now()
 
-    @commands.command()
+    @slash_command(name='ping',
+                   description='Ping bot',
+                   guild_ids=[GUILD_ID])
     async def ping(self, ctx):
-        """Ping bot"""
         embed = await Ping.create_status_embed(self)
-        msg = await ctx.send(embed=embed)
+        msg = await ctx.respond(embed=embed)
         start = datetime.now()
         await asyncio.sleep(1)
         while float((datetime.now() - start).total_seconds()) <= 300.0:
             embed = await Ping.create_status_embed(self)
-            await msg.edit(embed=embed)
+            await msg.edit_original_message(embed=embed)
             await asyncio.sleep(1)
 
     async def create_status_embed(self):
