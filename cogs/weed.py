@@ -18,9 +18,9 @@ class weed(commands.Cog):
                               "password": BLINK_PASSWORD}, no_prompt=True)
             self.blink.auth = self.auth
             self.blink.start()
+            self.mushroom_loop.start()
             self.weed_loop.start()
             self.pepper_loop.start()
-            self.mushroom_loop.start()
 
     def cog_unload(self):
         if PY_ENV == 'PROD':
@@ -51,6 +51,7 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def weed_loop(self):
+        await asyncio.sleep(2.5)
         msg = "Hourly Grow Tent Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'Wiz', 'grow_log')
         await self.client.get_channel(GROW_LOG_CH_ID).send(file=file, embed=embed)
