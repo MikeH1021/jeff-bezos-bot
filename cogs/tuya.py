@@ -50,7 +50,6 @@ class tuya(commands.Cog):
                    description='Control grow tent lights',
                    guild_ids=[GUILD_ID])
     async def light(self, ctx, arg: Option(str, 'on or off', autocomplete=get_lights)):
-        print(arg)
         d = tinytuya.OutletDevice(
             '30103770f4cfa2194159', '192.168.0.220', '69756f2b239d20db')
         d.set_version(3.3)

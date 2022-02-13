@@ -18,8 +18,8 @@ class weed(commands.Cog):
                               "password": BLINK_PASSWORD}, no_prompt=True)
             self.blink.auth = self.auth
             self.blink.start()
-            self.mushroom_loop.start()
             self.weed_loop.start()
+            self.mushroom_loop.start()
             self.pepper_loop.start()
 
     def cog_unload(self):
@@ -39,6 +39,7 @@ class weed(commands.Cog):
             image_name = f'grow-log-{current_time}'
         else:
             image_name = f'{grow}-{current_time}'
+        await asyncio.sleep(5)
         camera.image_to_file(
             f'{os.getcwd()}/jeff-bezos-bot/img/{grow}/{image_name}.jpg')
         embed = Embed(
@@ -51,9 +52,9 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def weed_loop(self):
-        await asyncio.sleep(2.5)
+        await asyncio.sleep(5)
         msg = "Hourly Grow Tent Update... Sponsored by Daddy Bezos"
-        file, embed, _ = await weed.image_helper(self, msg, 'Wiz', 'grow_log')
+        file, embed, _ = await weed.image_helper(self, msg, 'wiz', 'grow_log')
         await self.client.get_channel(GROW_LOG_CH_ID).send(file=file, embed=embed)
 
     @weed_loop.before_loop
@@ -62,7 +63,7 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def pepper_loop(self):
-        await asyncio.sleep(5)
+        await asyncio.sleep(15)
         msg = "Hourly Pepper Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'balcony', 'pepper_log')
         await self.client.get_channel(PEPPER_LOG_CH_ID).send(file=file, embed=embed)
@@ -73,7 +74,7 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def mushroom_loop(self):
-        await asyncio.sleep(10)
+        await asyncio.sleep(25)
         msg = "Hourly Shroom Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'myco', 'mushroom_log')
         await self.client.get_channel(MUSHROOM_LOG_CH_ID).send(file=file, embed=embed)
@@ -92,7 +93,7 @@ class weed(commands.Cog):
                       color=Color.green())
         tmp = await ctx.respond(embed=embed)
         msg = "Here's your pic, you filthy animal."
-        file, embed, image_name = await weed.image_helper(self, msg, 'Wiz', 'grow_log')
+        file, embed, image_name = await weed.image_helper(self, msg, 'wiz', 'grow_log')
         await tmp.edit_original_message(file=file, embed=embed)
         await asyncio.sleep(1200)
         os.remove(f'{os.getcwd()}/jeff-bezos-bot/img/grow_log/{image_name}.jpg')
