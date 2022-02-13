@@ -31,24 +31,27 @@ class weed(commands.Cog):
             pass
 
     async def image_helper(self, msg, camera, grow):
-        camera = self.blink.cameras[f'{camera}']
-        camera.snap_picture()
-        self.blink.refresh()
-        current_time = datetime.now().timestamp()
-        if grow == 'grow_log':
-            image_name = f'grow-log-{current_time}'
-        else:
-            image_name = f'{grow}-{current_time}'
-        await asyncio.sleep(5)
-        camera.image_to_file(
-            f'{os.getcwd()}/jeff-bezos-bot/img/{grow}/{image_name}.jpg')
-        embed = Embed(
-            title=msg,
-            color=Color.green())
-        file = File(
-            f'{os.getcwd()}/jeff-bezos-bot/img/{grow}/{image_name}.jpg', filename='image.jpg')
-        embed.set_image(url='attachment://image.jpg')
-        return file, embed, image_name
+        try:
+            camera = self.blink.cameras[f'{camera}']
+            camera.snap_picture()
+            self.blink.refresh()
+            current_time = datetime.now().timestamp()
+            if grow == 'grow_log':
+                image_name = f'grow-log-{current_time}'
+            else:
+                image_name = f'{grow}-{current_time}'
+            await asyncio.sleep(5)
+            camera.image_to_file(
+                f'{os.getcwd()}/jeff-bezos-bot/img/{grow}/{image_name}.jpg')
+            embed = Embed(
+                title=msg,
+                color=Color.green())
+            file = File(
+                f'{os.getcwd()}/jeff-bezos-bot/img/{grow}/{image_name}.jpg', filename='image.jpg')
+            embed.set_image(url='attachment://image.jpg')
+            return file, embed, image_name
+        except Exception as e:
+            print(e)
 
     @tasks.loop(minutes=60)
     async def weed_loop(self):
