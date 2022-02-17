@@ -52,7 +52,6 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def weed_loop(self):
-        await asyncio.sleep()
         msg = "Hourly Grow Tent Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'wiz', 'grow_log')
         await self.client.get_channel(GROW_LOG_CH_ID).send(file=file, embed=embed)
@@ -63,7 +62,6 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def pepper_loop(self):
-        await asyncio.sleep(2.5)
         msg = "Hourly Pepper Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'balcony', 'pepper_log')
         await self.client.get_channel(PEPPER_LOG_CH_ID).send(file=file, embed=embed)
@@ -74,7 +72,6 @@ class weed(commands.Cog):
 
     @tasks.loop(minutes=60)
     async def mushroom_loop(self):
-        await asyncio.sleep(5)
         msg = "Hourly Shroom Update... Sponsored by Daddy Bezos"
         file, embed, _ = await weed.image_helper(self, msg, 'myco', 'mushroom_log')
         await self.client.get_channel(MUSHROOM_LOG_CH_ID).send(file=file, embed=embed)
