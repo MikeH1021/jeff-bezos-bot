@@ -19,14 +19,14 @@ class weed(commands.Cog):
             self.blink.auth = self.auth
             self.blink.start()
             self.weed_loop.start()
-            # self.mushroom_loop.start()
-            # self.pepper_loop.start()
+            self.mushroom_loop.start()
+            self.pepper_loop.start()
 
     def cog_unload(self):
         if PY_ENV == 'PROD':
             self.weed_loop.cancel()
-            # self.pepper_loop.cancel()
-            # self.mushroom_loop.cancel()
+            self.pepper_loop.cancel()
+            self.mushroom_loop.cancel()
         else:
             pass
 
@@ -62,25 +62,25 @@ class weed(commands.Cog):
     async def before_weed_loop(self):
         await self.client.wait_until_ready()
 
-    # @tasks.loop(minutes=60)
-    # async def pepper_loop(self):
-    #     msg = "Hourly Pepper Update... Sponsored by Daddy Bezos"
-    #     file, embed, _ = await weed.image_helper(self, msg, 'balcony', 'pepper_log')
-    #     await self.client.get_channel(PEPPER_LOG_CH_ID).send(file=file, embed=embed)
+    @tasks.loop(minutes=60)
+    async def pepper_loop(self):
+        msg = "Hourly Pepper Update... Sponsored by Daddy Bezos"
+        file, embed, _ = await weed.image_helper(self, msg, 'balcony', 'pepper_log')
+        await self.client.get_channel(PEPPER_LOG_CH_ID).send(file=file, embed=embed)
 
-    # @pepper_loop.before_loop
-    # async def before_pepper_loop(self):
-    #     await self.client.wait_until_ready()
+    @pepper_loop.before_loop
+    async def before_pepper_loop(self):
+        await self.client.wait_until_ready()
 
-    # @tasks.loop(minutes=60)
-    # async def mushroom_loop(self):
-    #     msg = "Hourly Shroom Update... Sponsored by Daddy Bezos"
-    #     file, embed, _ = await weed.image_helper(self, msg, 'myco', 'mushroom_log')
-    #     await self.client.get_channel(MUSHROOM_LOG_CH_ID).send(file=file, embed=embed)
+    @tasks.loop(minutes=60)
+    async def mushroom_loop(self):
+        msg = "Hourly Shroom Update... Sponsored by Daddy Bezos"
+        file, embed, _ = await weed.image_helper(self, msg, 'myco', 'mushroom_log')
+        await self.client.get_channel(MUSHROOM_LOG_CH_ID).send(file=file, embed=embed)
 
-    # @mushroom_loop.before_loop
-    # async def before_mushroom_loop(self):
-    #     await self.client.wait_until_ready()
+    @mushroom_loop.before_loop
+    async def before_mushroom_loop(self):
+        await self.client.wait_until_ready()
 
     @slash_command(name='weed',
                    description='Get live pic of grow tent',
