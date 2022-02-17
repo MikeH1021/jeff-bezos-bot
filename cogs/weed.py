@@ -31,6 +31,7 @@ class weed(commands.Cog):
             pass
 
     async def image_helper(self, msg, camera, grow):
+        self.blink.refresh()
         camera = self.blink.cameras[f'{camera}']
         camera.snap_picture()
         self.blink.refresh()
