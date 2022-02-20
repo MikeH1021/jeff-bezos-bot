@@ -31,17 +31,15 @@ class weed(commands.Cog):
             pass
 
     async def image_helper(self, msg, camera, grow):
-        await asyncio.sleep(10)
-        self.blink.refresh()
         camera = self.blink.cameras[f'{camera}']
         camera.snap_picture()
+        await asyncio.sleep(10)
         self.blink.refresh()
         current_time = datetime.now().timestamp()
         if grow == 'grow_log':
             image_name = f'grow-log-{current_time}'
         else:
             image_name = f'{grow}-{current_time}'
-        await asyncio.sleep(5)
         camera.image_to_file(
             f'{os.getcwd()}/jeff-bezos-bot/img/{grow}/{image_name}.jpg')
         embed = Embed(
