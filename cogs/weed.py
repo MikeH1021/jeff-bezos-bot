@@ -33,7 +33,7 @@ class weed(commands.Cog):
     async def image_helper(self, msg, camera, grow):
         camera = self.blink.cameras[f'{camera}']
         camera.snap_picture()
-        await asyncio.sleep(10)
+        await asyncio.sleep(20)
         self.blink.refresh()
         current_time = datetime.now().timestamp()
         if grow == 'grow_log':
