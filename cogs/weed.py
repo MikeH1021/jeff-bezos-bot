@@ -19,14 +19,14 @@ class weed(commands.Cog):
             self.blink.auth = self.auth
             self.blink.start()
             self.weed_loop.start()
-            self.mushroom_loop.start()
+            # self.mushroom_loop.start()
             self.pepper_loop.start()
 
     def cog_unload(self):
         if PY_ENV == 'PROD':
             self.weed_loop.cancel()
             self.pepper_loop.cancel()
-            self.mushroom_loop.cancel()
+            # self.mushroom_loop.cancel()
         else:
             pass
 
