@@ -4,8 +4,6 @@ from discord.ext import commands
 from discord import ui, Interaction, ButtonStyle
 from vars import GUILD_ID
 
-# Define a simple View that gives us a confirmation menu
-
 
 class Confirm(ui.View):
     def __init__(self):
