@@ -1,6 +1,6 @@
 from datetime import datetime
-import psutil
 import asyncio
+import psutil
 from discord import Color, Embed
 from discord.commands import slash_command
 from discord.ext import commands
@@ -45,7 +45,8 @@ class Ping(commands.Cog):
         return embed
 
     async def format_seconds(self, time_seconds):
-        """Formats some number of seconds into a string of format d days, x hours, y minutes, z seconds"""
+        """Formats some number of seconds into a string of format:
+            d days, x hours, y minutes, z seconds"""
         seconds = time_seconds
         hours = 0
         minutes = 0

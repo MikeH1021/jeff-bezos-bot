@@ -1,9 +1,9 @@
-from discord import AutocompleteContext, Color, Embed
+import asyncio
+from discord import AutocompleteContext
 from discord.commands import Option, slash_command
 from discord.ext import commands, tasks
 from vars import *
 import tinytuya
-import asyncio
 
 WATER_TIME = 5.0
 
@@ -36,7 +36,6 @@ class tuya(commands.Cog):
         d = tinytuya.OutletDevice(
             '80527250a4e57c11e7b9', '192.168.0.102', '09c7bef14266a54d')
         d.set_version(3.3)
-        data = d.status()
         d.turn_on()
         await asyncio.sleep(arg)
         d.turn_off()
@@ -53,7 +52,6 @@ class tuya(commands.Cog):
         d = tinytuya.OutletDevice(
             '30103770f4cfa2194159', '192.168.0.220', '69756f2b239d20db')
         d.set_version(3.3)
-        data = d.status()
         if arg == 'on':
             d.turn_on()
         elif arg == 'off':
@@ -78,7 +76,6 @@ class tuya(commands.Cog):
         d = tinytuya.OutletDevice(
             '80527250a4e57c11e7b9', '192.168.0.102', '09c7bef14266a54d')
         d.set_version(3.3)
-        data = d.status()
         d.turn_on()
         await asyncio.sleep(WATER_TIME)
         d.turn_off()

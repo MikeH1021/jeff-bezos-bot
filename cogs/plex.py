@@ -1,10 +1,10 @@
+import os
+import json
+import asyncio
 from discord import Color, Embed
 from discord.ext import commands
 import requests
-import os
-import json
 from pyarr import RadarrAPI
-import asyncio
 from vars import *
 
 AVG_DOWNLOAD_TIME = 30
@@ -45,7 +45,7 @@ class Plex(commands.Cog):
             embed_flag = False
             movie_embed = None
             while True:
-                tmp2 = await ctx.send(f'Displaying results. Type `cancel` to stop search')
+                tmp2 = await ctx.send('Displaying results. Type `cancel` to stop search')
                 await asyncio.sleep(1)
                 tmp3 = await ctx.send('Is this the correct movie? (`yes` or `no`)')
                 for movie in response['results']:
@@ -61,13 +61,13 @@ class Plex(commands.Cog):
 
                     message = await self.client.wait_for('message', timeout=300, check=check)
                     movie_choice = message.content.lower().strip()
-                    if movie_choice == 'yes' or movie_choice == 'y':
+                    if movie_choice in ('yes', 'y'):
                         await message.delete()
                         selected_movie = movie['title']
                         select_msg = await ctx.send(f'Selected: {selected_movie}')
                         selected_movie_id = movie['id']
                         break
-                    elif movie_choice == 'no' or movie_choice == 'n':
+                    elif movie_choice in ('no', 'n'):
                         await message.delete()
                         result_cnt -= 1
                         if result_cnt == 0:
@@ -91,7 +91,7 @@ class Plex(commands.Cog):
                         await asyncio.sleep(10)
                         await msg.delete()
                         return
-                if movie_choice == 'yes' or movie_choice == 'y':
+                if movie_choice in ('yes', 'y'):
                     await tmp.delete()
                     await tmp2.delete()
                     await tmp3.delete()

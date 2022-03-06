@@ -1,12 +1,12 @@
 import os
-from vars import *
+import asyncio
+from datetime import datetime
+from discord import Color, Embed, File
 from discord.commands import slash_command
 from discord.ext import commands, tasks
 from blinkpy.blinkpy import Blink
 from blinkpy.auth import Auth
-import asyncio
-from discord import Color, Embed, File
-from datetime import datetime
+from vars import *
 
 
 class weed(commands.Cog):
