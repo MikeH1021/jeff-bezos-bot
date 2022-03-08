@@ -1,6 +1,6 @@
+import random
 from discord.commands import slash_command
 from discord.ext import commands
-import random
 from vars import GUILD_ID
 
 

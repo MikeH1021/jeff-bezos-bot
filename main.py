@@ -1,7 +1,7 @@
 import os
-from vars import *
 from discord import Intents
 from discord.ext import commands
+from vars import CLIENT_TOKEN, GROW_LOG_CH_ID, KYLE_ID, MY_ID, PY_ENV
 
 # Setup Client
 intents = Intents.all()
