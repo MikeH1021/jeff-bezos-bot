@@ -79,7 +79,7 @@ class tuya(commands.Cog):
         d.turn_on()
         await asyncio.sleep(WATER_TIME)
         d.turn_off()
-        await self.client.get_channel(PEPPER_LOG_CH_ID).send(f"Scheduled watering executed for {WATER_TIME} seconds.")
+        await self.client.get_channel(GROW_LOG_CH_ID).send(f"Scheduled watering executed for {WATER_TIME} seconds.")
 
     @water_loop.before_loop
     async def before_water_loop(self):
