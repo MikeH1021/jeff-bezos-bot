@@ -12,7 +12,7 @@ from datetime import datetime
 class weed(commands.Cog):
     def __init__(self, client):
         self.client = client
-        if PY_ENV == 'PROD':
+        if PY_ENV == 'DISABLE':
             self.blink = Blink()
             self.auth = Auth({"username": BLINK_USERNAME,
                               "password": BLINK_PASSWORD}, no_prompt=True)
@@ -23,7 +23,7 @@ class weed(commands.Cog):
             self.pepper_loop.start()
 
     def cog_unload(self):
-        if PY_ENV == 'PROD':
+        if PY_ENV == 'DISABLE':
             self.weed_loop.cancel()
             self.pepper_loop.cancel()
             # self.mushroom_loop.cancel()
