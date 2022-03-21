@@ -17,11 +17,11 @@ c = tinytuya.Cloud(
 class tuya(commands.Cog):
     def __init__(self, client):
         self.client = client
-        if PY_ENV == 'PROD':
+        if PY_ENV == 'DISABLE':
             self.water_loop.start()
 
     def cog_unload(self):
-        if PY_ENV == 'PROD':
+        if PY_ENV == 'DISABLE':
             self.water_loop.cancel()
         else:
             pass
